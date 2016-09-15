@@ -5,6 +5,14 @@
 #include "freesasa.h"
 #include "coord.h"
 
+#ifndef __func__
+#define __func__ __FUNCTION__
+#endif
+
+#ifdef _MSC_VER
+  #define inline __inline
+#endif
+
 //! The name of the library, to be used in error messages and logging
 extern const char *freesasa_name;
 
