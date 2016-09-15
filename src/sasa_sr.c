@@ -240,7 +240,7 @@ sr_atom_area(int i,
     const int n_points = sr->n_points;
     /* this array keeps track of which testpoints belonging to
        a certain atom do not overlap with any other atoms */
-    int *spcount = alloca(sizeof(int) * n_points);
+    int *spcount = _alloca(sizeof(int) * n_points);
     const int nni = sr->nb->nn[i];
     const int * __restrict nbi = sr->nb->nb[i];
     const double ri = sr->r[i];
