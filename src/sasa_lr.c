@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 #include <math.h>
 #if HAVE_CONFIG_H
@@ -14,7 +14,8 @@
 #include "freesasa.h"
 #include "freesasa_internal.h"
 #include "nb.h"
-
+#define _USE_MATH_DEFINES
+#include <math.h>
 const double TWOPI = 2*M_PI;
 
 //calculation parameters and data (results stored in *sasa)
@@ -45,7 +46,7 @@ atom_area(lr_data *lr,int i);
 /** Sum of exposed arcs based on buried arc intervals arc, assumes no
     intervals cross zero */
 static double
-exposed_arc_length(double *restrict arc, int n);
+exposed_arc_length(double *__restrict arc, int n);
 
 /** Release contenst of lr_data pointer*/
 static void
@@ -212,15 +213,16 @@ atom_area(lr_data *lr,
        "Geometry of Lee & Richards' algorithm") */
 
     const int nni = lr->adj->nn[i];
-    const double * restrict const v = freesasa_coord_all(lr->xyz);
-    const double * restrict const R = lr->radii;
-    const int * restrict const nbi = lr->adj->nb[i];
-    const double * restrict const xydi = lr->adj->xyd[i];
-    const double * restrict const xdi = lr->adj->xd[i];
-    const double * restrict const ydi = lr->adj->yd[i];
+    const double * __restrict const v = freesasa_coord_all(lr->xyz);
+    const double * __restrict const R = lr->radii;
+    const int * __restrict const nbi = lr->adj->nb[i];
+    const double * __restrict const xydi = lr->adj->xyd[i];
+    const double * __restrict const xdi = lr->adj->xd[i];
+    const double * __restrict const ydi = lr->adj->yd[i];
     const double zi = v[3*i+2], Ri = R[i];
     const int ns = lr->n_slices_per_atom;
-    double arc[nni*4], z_nb[nni], R_nb[nni];
+    double *arc = _alloca(sizeof(double)*nni*4), *z_nb = _alloca(sizeof(double) * nni), 
+		*R_nb = _alloca(sizeof(double) * nni);
     double z, delta, sasa = 0;
     
     for (int j = 0; j < nni; ++j) {
@@ -292,7 +294,7 @@ atom_area(lr_data *lr,
 
 //insertion sort (faster than qsort for these short lists)
 inline static void
-sort_arcs(double * restrict arc,
+sort_arcs(double * __restrict arc,
           int n) 
 {
     double tmp[2];
@@ -318,7 +320,7 @@ sort_arcs(double * restrict arc,
 // sort arcs by start-point, loop through them to sum parts of circle
 // not covered by any of the arcs
 inline static double
-exposed_arc_length(double * restrict arc,
+exposed_arc_length(double * __restrict arc,
                    int n)
 {
     if (n == 0) return TWOPI;

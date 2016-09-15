@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #if HAVE_CONFIG_H
 # include <config.h>
@@ -239,18 +240,18 @@ sr_atom_area(int i,
     const int n_points = sr->n_points;
     /* this array keeps track of which testpoints belonging to
        a certain atom do not overlap with any other atoms */
-    int spcount[n_points];
+    int *spcount = alloca(sizeof(int) * n_points);
     const int nni = sr->nb->nn[i];
-    const int * restrict nbi = sr->nb->nb[i];
+    const int * __restrict nbi = sr->nb->nb[i];
     const double ri = sr->r[i];
-    const double * restrict r2 = sr->r2;
-    const double * restrict v = freesasa_coord_all(sr->xyz);
-    const double * restrict vi = v+3*i;
-    const double * restrict tp;
+    const double * __restrict r2 = sr->r2;
+    const double * __restrict v = freesasa_coord_all(sr->xyz);
+    const double * __restrict vi = v+3*i;
+    const double * __restrict tp;
     int n_surface = 0, current_nb, a;
     double dx, dy, dz;
     /* testpoints for this atom */
-    coord_t * restrict tp_coord_ri = freesasa_coord_copy(sr->srp);
+    coord_t * __restrict tp_coord_ri = freesasa_coord_copy(sr->srp);
 
     freesasa_coord_scale(tp_coord_ri, ri);
     freesasa_coord_translate(tp_coord_ri, vi);

@@ -126,7 +126,7 @@ find_string(char **array,
     if (array == NULL || array_size == 0) return -1;
 
     int n = strlen(key);
-    char key_trimmed[n+1];
+	char *key_trimmed = _alloca(sizeof(char)*(n + 1));
 
     // remove trailing and leading whitespace
     sscanf(key,"%s",key_trimmed);
@@ -334,7 +334,7 @@ read_types_line(struct classifier_types *types,
                 const char* line) 
 {
     size_t blen=101;
-    char buf1[blen], buf2[blen];
+    char *buf1 = _alloca(sizeof(char)*blen), *buf2 = _alloca(sizeof(char)*blen);
     int the_type;
     double r;
     if (sscanf(line,"%s %lf %s",buf1,&r,buf2) == 3) {
@@ -364,7 +364,7 @@ read_types(struct classifier_types *types,
     char *line = NULL;
     int ret = FREESASA_SUCCESS, nl;
     size_t blen=101;
-    char buf[blen];
+    char *buf = _alloca(sizeof(char)*blen);
     fseek(input,fi.begin,SEEK_SET);
     // read command (and discard)
     if (fscanf(input,"%s",buf) == 0) return FREESASA_FAIL;
@@ -467,7 +467,8 @@ read_atoms_line(struct classifier_config *config,
                 const char* line)
 {
     size_t blen=100;
-    char buf1[blen], buf2[blen], buf3[blen];
+    char *buf1 = _alloca(sizeof(char)*blen), *buf2 = _alloca(sizeof(char)*blen),
+		 *buf3 = _alloca(sizeof(char)*blen);
     int res, type, atom;
     if (sscanf(line,"%s %s %s",buf1,buf2,buf3) == 3) {
         type = find_string(types->name, buf3, types->n_types);
@@ -505,7 +506,7 @@ read_atoms(struct classifier_config *config,
            struct file_range fi)
 {
     size_t blen=100;
-    char *line = NULL, buf[blen];
+    char *line = NULL, *buf = _alloca(sizeof(char)*blen);
     int ret = FREESASA_SUCCESS, nl;
     fseek(input, fi.begin, SEEK_SET);
     // read command (and discard)
@@ -785,7 +786,7 @@ residue(const char *res_name,
         const freesasa_classifier *c)
 {
     int len = strlen(res_name);
-    char cpy[len+1];
+    char *cpy = _alloca(sizeof(char) * (len+1));
 
     sscanf(res_name,"%s",cpy);
     for (int i = ALA; i <= NN; ++i) {
@@ -822,7 +823,7 @@ classifier_is_backbone(const char *res_name,
                        const freesasa_classifier *classifier)
 {
     int n = strlen(atom_name);
-    char name[n+1];
+	char *name = _alloca(sizeof(char) * (n + 1));
     name[0] = '\0';
     sscanf(atom_name, "%s", name); //trim whitespace
 

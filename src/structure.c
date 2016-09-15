@@ -104,7 +104,8 @@ atom_new_from_line(const char *line,
     const int buflen = strlen(line);
     int flag;
     struct atom *a;
-    char aname[buflen], rname[buflen], rnumber[buflen], symbol[buflen];
+    char *aname = _alloca(sizeof(char)*buflen), *rname = _alloca(sizeof(char) * buflen), 
+		*rnumber = _alloca(sizeof(char) * buflen), *symbol = _alloca(sizeof(char) * buflen);
 
     if (alt_label) *alt_label = freesasa_pdb_get_alt_coord_label(line);
 

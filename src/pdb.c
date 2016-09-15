@@ -29,7 +29,7 @@ pdb_get_double(const char *line, int width, double *val)
 {
     // allow truncated lines
     if (strlen(line) < width) width = strlen(line);
-    char buf[width+1];
+    char *buf = _alloca(sizeof(char) * (width+1));
     float tmp;
     memcpy(buf, line, width);
     buf[width] = '\0';

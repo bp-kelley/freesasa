@@ -41,7 +41,7 @@ cell_list_bounds(cell_list *c,
 {
     const int n = freesasa_coord_n(coord);
     double d = c->d;
-    const double * restrict v = freesasa_coord_i(coord,0);
+    const double * __restrict v = freesasa_coord_i(coord,0);
     double x=v[0],X=v[0],y=v[1],Y=v[1],z=v[2],Z=v[2];
     for (int i = 1; i < n; ++i) {
         v = freesasa_coord_i(coord,i);
@@ -123,7 +123,7 @@ get_nb(cell_list *c)
 //! Get the cell index of a given atom
 static int
 coord2cell_index(const cell_list *c,
-                 const double * restrict xyz)
+                 const double * __restrict xyz)
 {
     double d = c->d;
     int ix = (int)((xyz[0] - c->x_min)/d);
@@ -144,7 +144,7 @@ fill_cells(cell_list *c,
         c->cell[i].n_atoms = 0;
     }
     for (int i = 0; i < freesasa_coord_n(coord); ++i) {
-        const double * restrict v = freesasa_coord_i(coord,i);
+        const double * __restrict v = freesasa_coord_i(coord,i);
         cell *cell;
         int *a;
         cell = &c->cell[coord2cell_index(c,v)];
@@ -396,7 +396,7 @@ nb_calc_cell_pair(nb_list *nb_list,
                   const cell *ci,
                   const cell *cj)
 {
-    const double * restrict v = freesasa_coord_all(coord);
+    const double * __restrict v = freesasa_coord_all(coord);
     double ri, rj, xi, yi, zi, xj, yj, zj,
         dx, dy, dz, cut2;
     int i,j,ia,ja;

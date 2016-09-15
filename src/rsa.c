@@ -139,7 +139,6 @@ rsa_get_rel(freesasa_residue_sasa *rel,
             const freesasa_residue_sasa *ref)
 {
     int i_ref = -1;
-    double nan = 0.0/0.0;
 
     for(int j = 0; ref[j].name != NULL; ++j) {
         if (strcmp(ref[j].name, abs->name) == 0) {
@@ -155,7 +154,7 @@ rsa_get_rel(freesasa_residue_sasa *rel,
         rel->polar = 100. * abs->polar / ref[i_ref].polar;
         rel->apolar = 100. * abs->apolar / ref[i_ref].apolar;
     } else {
-        rel->total = rel->side_chain = rel->main_chain = rel->polar = rel->apolar = nan;
+        rel->total = rel->side_chain = rel->main_chain = rel->polar = rel->apolar = NAN;
     }
 }
 
@@ -262,7 +261,8 @@ freesasa_write_rsa(FILE *output,
     const char *chain_labels = freesasa_structure_chain_labels(structure);
     int naa = freesasa_structure_n_residues(structure),
         n_chains = strlen(chain_labels);
-    freesasa_residue_sasa abs, rel, chain_abs[n_chains], all_chains_abs = zero_rs;
+    freesasa_residue_sasa abs, rel, *chain_abs = _alloca(sizeof(freesasa_residue_sasa)*n_chains), 
+		all_chains_abs = zero_rs;
 
     if (reference) {
         cfg.polar_classifier = reference->polar_classifier;
